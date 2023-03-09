@@ -14,7 +14,7 @@
      - `Name`：`conf`
      - `Value`:
   ```
-  '{"m_filter": [["5483", "5919"], ["5928"]], "senderMail": {"addr": "example@exapmle.com", "passwd": "ExamplePassWd", "host": "smtp.example.com", "port": "587"}, "rcvMails": ["example@qq.com"]}'
+  {"m_filter": [["5483", "5919"], ["5928"]], "senderMail": {"addr": "example@exapmle.com", "passwd": "ExamplePassWd", "host": "smtp.example.com", "port": "587"}, "rcvMails": ["example@qq.com"],"onlyOnSale":true}
   ```
   - [说明]
     - `m_filter`字段可选值（**非空**）：
@@ -39,6 +39,9 @@
       - `"example01@qq.com"`
       - `"example02@outlook.com"`
       - `···`
+    - `onlyOnSale`字段
+      - `"true"`：只在产品处于`有货`状态时发送通知（default）
+      - `"false"`：在产品处于`缺货`状态时同样发送通知
 
 
  - 添加Actions

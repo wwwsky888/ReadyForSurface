@@ -1,10 +1,3 @@
-#!/usr/bin/python3.9
-# -*- coding: utf-8 -*-
-# @Author  : Loot at the stars
-# @Time    : 2023/3/9 17:05
-# @File    : main.py
-
-
 import json
 import os
 from datetime import datetime, timedelta
@@ -16,6 +9,12 @@ from bs4 import BeautifulSoup
 
 def nowT():
     return (datetime.utcnow() + timedelta(hours=8)).strftime('%Y/%m/%d %H:%M:%S')
+
+def str2bool(s):
+    if s=='true':
+        return True
+    elif s=='false':
+        return False
 
 
 class SurfaceWatchDog:
@@ -32,6 +31,7 @@ class SurfaceWatchDog:
                          '5932': '英特尔酷睿 i7/16GB/1TB',
                          '5933': '英特尔酷睿 i7/32GB/1TB'}
         self.session = requests.session()
+        self.onlyOnSale = True
         self.m_filter = []
         self.senderMail = {}
         self.rcvMails = []
@@ -43,14 +43,14 @@ class SurfaceWatchDog:
     def loadConf(self):
         try:
             conf = os.environ.get('conf')
-            print(conf)
             if not conf:
-                print(nowT() + "|配置有误...exit()")
+                print(nowT() + "|配置有误...")
                 exit(-1)
             jConf = json.loads(conf)
             self.m_filter = jConf['m_filter']
             self.senderMail = jConf['senderMail']
             self.rcvMails = jConf['rcvMails']
+            self.onlyOnSale = str2bool(jConf['onlyOnSale'])
         except Exception as e:
             print(nowT() + e)
             exit(-1)
@@ -95,6 +95,9 @@ class SurfaceWatchDog:
 
     def printDevice(self, devices: list):
         print('%-22s%-6s\t%-10s\t%-20s\t%-12s' % ('查询时间', '有货', '颜色', '规格', '价格'))
+        if len(devices) == 0:
+            print(nowT() + "|无货")
+            return
         for device in devices:
             content = '%-22s\t%-6s\t\t%-10s%-20s\t%-12s' % (
                 nowT(), device['onSale'], self.attrDict[device['color']],
@@ -108,5 +111,5 @@ class SurfaceWatchDog:
 
 if __name__ == '__main__':
     dog = SurfaceWatchDog()
-    allDevices = dog.getOnSale(dog.query(), True, dog.m_filter)
+    allDevices = dog.getOnSale(dog.query(), dog.onlyOnSale, dog.m_filter)
     dog.printDevice(allDevices)
