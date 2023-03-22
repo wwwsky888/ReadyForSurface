@@ -1,0 +1,26 @@
+name: ReadyForSurface
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: 1 * * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: 'Set up Python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - name: 'Install requests'
+        run: pip install requests beautifulSoup4 yagmail
+      - name: 'Working'
+        env:
+          conf: ${{ secrets.CONF }}
+        run: python ./main.py
